@@ -39,14 +39,14 @@ export default function Trending() {
       .map((_, index) => (
         <div className="trending-collection" key={index}>
           <div className="trending-collection__rank">
-          <Skeleton width="20px" height='20px'/>
+          <Skeleton width="22px" height='20px' borderRadius="4px"/>
            </div>
           <div className="trending-collection__collection">
             <figure className="trending-collection__img__wrapper">
               <Skeleton width="100%" height="100%" borderRadius="4px" />
             </figure>
             <div className="trending-collection__name">
-              <Skeleton width="150px" height="18px" borderRadius="4px" />
+              <Skeleton width="160px" height="18px" borderRadius="4px" />
             </div>
           </div>
           <div className="trending-collection__price">
