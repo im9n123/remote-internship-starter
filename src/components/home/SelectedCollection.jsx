@@ -6,22 +6,57 @@ import SelectedCollectionSkeleton from "./SelectedCollectionSkeleton";
 
 export default function SelectedCollection() {
   const [collection, setCollection] = useState(null);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await axios.get(
-          "https://remote-internship-api-production.up.railway.app/selectedCollection"
-        );
-        setCollection(response.data.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+  const fetchData = React.useCallback(async () => {
+    try {
+      setCollection(null);
+      setError(false);
+      const response = await axios.get(
+        "https://remote-internship-api-production.up.railway.app/selectedCollection"
+      );
+      setCollection(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError(true);
     }
-    fetchData();
   }, []);
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (error) {
+    return (
+      <header>
+      <div className="selected-collection" style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '16px',
+          backgroundColor: '#f6f6f6',
+          color: 'black'
+        }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '600' }}>Error fetching data.</h2>
+          <button
+            onClick={fetchData}
+            className="selected-collection__button"
+            style={{
+              marginTop: 0,
+              cursor: 'pointer',
+              alignSelf: 'center',
+              backgroundColor: 'rgba(18, 18, 18, 0.08)',
+              border: '1px solid rgba(18, 18, 18, 0.2)',
+              color: 'black'
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      </header>
+    );
+  }
 
   if (!collection) {
     return <SelectedCollectionSkeleton />;
