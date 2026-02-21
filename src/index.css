@@ -7,6 +7,13 @@
   font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
+:root {
+  --swiper-navigation-size: 44px;
+  --swiper-navigation-top-offset: 50%;
+  --swiper-navigation-sides-offset: 10px;
+  --swiper-navigation-color: black;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -20,6 +27,7 @@ html {
 .container {
   padding: 40px 0;
 }
+
 
 .row {
   margin: 0 auto;
@@ -1559,6 +1567,23 @@ USER PAGE
   max-width: 240px;
 }
 
+.swiper-button-prev,
+.swiper-button-next {
+  svg {
+    width: 50%;
+    height: 50%
+  }
+  background-color: #fff;
+  
+  border-radius: 9999px;
+  
+  border: 1px solid #ccc;
+  font-size: 10px !important;
+}
+
+
+
+
 /* Media Queries */
 
 @media (max-width: 1760px) {
@@ -1869,4 +1894,8 @@ USER PAGE
   .item-column {
     width: calc((100% / 1) - 16px + (16px / 1));
   }
+}
+
+.invisible {
+  display: none;
 }

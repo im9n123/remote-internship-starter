@@ -1,61 +1,86 @@
-import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
+import CollectionItemsSkeleton from "../ui/CollectionItemsSkeleton";
+import { useFetch } from "./useCollection";
+import ItemsData from "../ui/ItemsData";
 
 export default function CollectionItems() {
+  const { id } = useParams();
+  const {
+    data: collection,
+    loading,
+    setData: setCollection,
+  } = useFetch(`/collection/${id}`, true);
+  const { handleLoadMore, visibleCount, visible } = useContext(AppContext);
+  const [sort, setSort] = useState("DEFAULT");
+
+  function sortCollection() {
+    if (sort === "HIGH_TO_LOW") {
+      setCollection({
+        ...collection,
+        items: collection.items.slice().sort((a, b) => b.price - a.price),
+      });
+    } else if (sort === "LOW_TO_HIGH") {
+      setCollection({
+        ...collection,
+        items: collection.items.slice().sort((a, b) => a.price - b.price),
+      });
+    }
+  }
+
+  useMemo(() => {
+    sortCollection();
+  }, [sort]);
+
   return (
-    <section id="collection-items">
-      <div className="row collection-items__row">
-        <div className="collection-items__header">
-          <div className="collection-items__header__left">
-            <span className="collection-items__header__live">
-              <div className="green-pulse"></div>
-              Live
-            </span>
-            <span className="collection-items__header__results">
-              10 results
-            </span>
-          </div>
-          <select className="collection-items__header__sort">
-            <option value="" default>
-              Default
-            </option>
-            <option value="">Price high to low</option>
-            <option value="">Price low to high</option>
-          </select>
-        </div>
-        <div className="collection-items__body">
-          {new Array(8).fill(0).map((_, index) => (
-            <div className="item-column">
-              <Link to={"/item"} key={index} className="item">
-                <figure className="item__img__wrapper">
-                  <img
-                    src="https://i.seadn.io/gcs/files/0a085499e0f3800321618af356c5d36b.png?auto=format&dpr=1&w=384"
-                    alt=""
-                    className="item__img"
-                  />
-                </figure>
-                <div className="item__details">
-                  <span className="item__details__name">Meebit #0001</span>
-                  <span className="item__details__price">0.98 ETH</span>
-                  <span className="item__details__last-sale">
-                    Last sale: 7.45 ETH
-                  </span>
-                </div>
-                <div className="item__see-more">
-                  <button className="item__see-more__button">See More</button>
-                  <div className="item__see-more__icon">
-                    <FontAwesomeIcon icon={faShoppingBag} />
-                  </div>
-                </div>
-              </Link>
+    <>
+      {loading ? (
+        <CollectionItemsSkeleton />
+      ) : (
+        <section id="collection-items">
+          <div className="row collection-items__row">
+            <div className="collection-items__header">
+              <div className="collection-items__header__left">
+                <span className="collection-items__header__live">
+                  <div className="green-pulse"></div>
+                  Live
+                </span>
+                <span className="collection-items__header__results">
+                  {collection.items.length} results
+                </span>
+              </div>
+              <select
+                value={sort}
+                className="collection-items__header__sort"
+                onChange={(event) => setSort(event.target.value)}
+              >
+                <option value="DEFAULT" default disabled>
+                  Default
+                </option>
+                <option value="HIGH_TO_LOW">Price high to low</option>
+                <option value="LOW_TO_HIGH">Price low to high</option>
+              </select>
             </div>
-          ))}
-        </div>
-      </div>
-      <button className="collection-page__button">Load more</button>
-    </section>
+            <div className="collection-items__body">
+              {collection.items.slice(0, visibleCount).map((item) => (
+                <div className="item-column" key={item.itemId}>
+                  <ItemsData item={item} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <button
+            className={`collection-page__button ${!visible && "invisible"}`}
+            onClick={() => handleLoadMore(collection.items.length)}
+          >
+            Load more
+          </button>
+        </section>
+      )}
+    </>
   );
 }
