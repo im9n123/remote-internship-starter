@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import VerifiedIcon from "../../assets/verified.png";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import Skeleton from "../ui/Skeleton";
-import { useFetch } from "../collection/useCollection";
 
 export default function SelectedCollection() {
   const { store, loading } = useContext(AppContext);
