@@ -27,7 +27,7 @@ export default function SelectedCollection() {
           <h1 className="selected-collection__title">
             Coachella Throwback Merchandise Trunk
           </h1>
-          <Link to={'/user'} className="selected-collection__author">
+          <Link to={"/user"} className="selected-collection__author">
             By Coachella
             <img
               src={VerifiedIcon}
@@ -35,7 +35,7 @@ export default function SelectedCollection() {
             />
           </Link>
           <div className="selected-collection__details">10 items · 3.4 ETH</div>
-          <Link to={'/collection'} className="selected-collection__button">
+          <Link to={"/collection"} className="selected-collection__button">
             <div className="green-pulse"></div>
             View Collection
           </Link>
