@@ -8,6 +8,7 @@ import ItemPage from "./pages/ItemPage";
 import UserPage from "./pages/UserPage";
 
 function App() {
+
   return (
     <Router>
       <Nav />
@@ -16,6 +17,9 @@ function App() {
         <Route path="/collections" element={<CollectionsPage />} />
         <Route path="/collection" element={<CollectionPage />} />
         <Route path="/item" element={<ItemPage />} />
+        <Route path="/user/:id" element={<UserPage />} />
+        <Route path="/collection/:id" element={<CollectionPage />} />
+        <Route path="/item/:id" element={<ItemPage />} />
         <Route path="/user" element={<UserPage />} />
       </Routes>
       <Footer />
