@@ -1,57 +1,77 @@
 import { faShoppingBag, faTableCells } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import CollectionGrid from "../collection/CollectionGrid.jsx";
+import axios from "axios";
+import Skeleton from "../ui/Skeleton.jsx";
 
-export default function RecommendedItems() {
+export default function RecommendedItems({ collectionId, currentItemId }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!collectionId) return;
+    async function fetchData() {
+      try {
+        const { data } = await axios.get(
+          `https://remote-internship-api-production.up.railway.app/collection/${collectionId}`,
+        );
+        const collectionItems = (data.data.items || []).map((item) => ({
+          ...item,
+          collectionId: data.data.id,
+          id: item.itemId,
+          floor: item.price,
+          totalVolume: item.lastSale,
+          imageLink: item.imageLink,
+          title: item.title,
+        }));
+
+        setItems(collectionItems.filter((item) => item.id !== currentItemId));
+      } catch (error) {
+        console.log("Failed to fetch recommended items", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [collectionId, currentItemId]);
+
   return (
     <section id="recommended-items">
       <div className="container">
         <div className="row recommended-items__row">
           <div className="recommended-items__wrapper">
             <div className="recommended-items__header">
-              <FontAwesomeIcon icon={faTableCells} />
-              <h3 className="recommended-items__header__title">
-                More from this collection
-              </h3>
+              {loading ? (
+                <Skeleton width="160px" height="1.2rem" borderRadius="4px" />
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faTableCells} />
+                  <h3 className="recommended-items__header__title">
+                    More from this collection
+                  </h3>
+                </>
+              )}
             </div>
-            <div className="recommended-items__body">
-              {new Array(6).fill(0).map((_, index) => (
-                <div className="item-column">
-                  <Link to={"/item"} key={index} className="item">
-                    <figure className="item__img__wrapper">
-                      <img
-                        src="https://i.seadn.io/gcs/files/0a085499e0f3800321618af356c5d36b.png?auto=format&dpr=1&w=384"
-                        alt=""
-                        className="item__img"
-                      />
-                    </figure>
-                    <div className="item__details">
-                      <span className="item__details__name">Meebit #0001</span>
-                      <span className="item__details__price">0.98 ETH</span>
-                      <span className="item__details__last-sale">
-                        Last sale: 7.45 ETH
-                      </span>
-                    </div>
-                    <div className="item__see-more">
-                      <button className="item__see-more__button">
-                        See More
-                      </button>
-                      <div className="item__see-more__icon">
-                        <FontAwesomeIcon icon={faShoppingBag} />
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
+            <CollectionGrid
+              collections={items}
+              loading={loading}
+              slider
+              linkPrefix="/item"
+              isItemCard
+            />
             <div className="recommended-items__footer">
-              <Link
-                to={"/collection"}
-                className="recommended-items__footer__button"
-              >
-                View Collection
-              </Link>
+              {loading ? (
+                <Skeleton width="100px" height="2rem" borderRadius="6px" />
+              ) : (
+                <Link
+                  to={`/collection/${collectionId}`}
+                  className="recommended-items__footer__button"
+                >
+                  View Collection
+                </Link>
+              )}
             </div>
           </div>
         </div>
