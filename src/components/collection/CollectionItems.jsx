@@ -28,8 +28,8 @@ export default function CollectionItems() {
         </div>
         <div className="collection-items__body">
           {new Array(8).fill(0).map((_, index) => (
-            <div className="item-column">
-              <Link to={"/item"} key={index} className="item">
+            <div key={index} className="item-column">
+              <Link to={"/item"} className="item">
                 <figure className="item__img__wrapper">
                   <img
                     src="https://i2c.seadn.io/ethereum/0x7bd29408f11d2bfc23c34f18275bbf23bb716bc7/029b88277232c269d39c808a8dcfba/08029b88277232c269d39c808a8dcfba.png?w=500"
